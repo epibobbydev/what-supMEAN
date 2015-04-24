@@ -18,6 +18,7 @@ function getArticle() {
 	socket.unsyncUpdates('article');
 	$http.get('/api/articles').success(function(articles) {
 		$scope.articles = articles;
+		console.dir(articles.comments);
 		angular.forEach(articles, function(article) {
 			if (article.linkType === 'video') {
 				article.linkSrc = $sce.trustAsHtml(article.linkSrc);
@@ -90,7 +91,9 @@ $scope.addComment = function(index, idArticle) {
 				$scope.newComment = {};
 				$http.get('/api/articles/' + idArticle).success(function(article) {
 					article.comments.push(comment._id);
-					$http.put('/api/articles/'+idArticle, article);
+					$http.put('/api/articles/'+idArticle, article).success(function() {
+							getArticle();
+						});
 				});
 			 });
 	}

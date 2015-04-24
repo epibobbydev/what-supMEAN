@@ -29,6 +29,14 @@ ArticleSchema.statics = {
       .sort('-date')
       .limit(20)
       .exec(cb);
+  },
+    loadMyRecent: function(idUser, cb) {
+    this.find({author : mongoose.Types.ObjectId(idUser)})
+      .populate({path:'author', select: 'name'})
+	  .populate('comments')
+      .sort('-date')
+      .limit(20)
+      .exec(cb);
   }
 };
 
