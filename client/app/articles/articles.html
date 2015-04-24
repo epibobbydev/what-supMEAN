@@ -1,0 +1,62 @@
+<div ng-include="'components/navbar/navbar.html'"></div>
+<div class="container">
+	<header class="hero-unit" id="banner">
+		<div class="container">
+			<h1 >What's new</h1>
+		</div>
+	</header>
+	
+	<ul ng-repeat="article in articles" style="list-style-type: none; width:80%;">
+		<li>
+			<div >
+				<h3 class="title-article" ><span style="margin-left : 20px;">{{article.title}}</span></h3>
+				<div class="bloc-article" >
+					<div ng-if="article.linkType == 'video'" style="margin-top:20px; margin-left:20px">
+						<div ng-bind-html="article.linkSrc"></div>
+					</div>
+					<div ng-if="article.linkType == 'img'">
+						<span style="margin-top : 10px"> <img class="img-article" src="{{article.linkSrc}}" alt="Photo" title="Photo" /></span>
+					</div>
+					
+					<p style="margin-top : 10px; margin-left:10px; font-size : 18px">{{article.content}}</p>
+					<div style="margin-bottom: 10px"> 
+						<span style="font-weight:bold; margin-left:10px; width: 30%">
+							<img class="img-author" src="assets/images/tquill.gif" alt="Author" title="Written by" /> Written by {{article.author.name}} on {{article.date | date: 'medium'}}
+						</span>
+						<span style="float:right; margin-right: 10px"> 
+							<img class="img-author" src="assets/images/like.png" alt="Like" title="Like" ng-click="incrementArticleUpvotes(article._id);"/> <span style="color:green; font-weight : bold">({{article.upvotes}}) </span>
+						<img class="img-author" src="assets/images/dislike.png" alt="Dislike" title="Dislike" ng-click="incrementArticleDownvotes(article._id);"/> <span style="color:red; font-weight : bold">({{article.downvotes}})</span>
+						</span>
+					</div>
+				</div>
+			</div>
+			<div>
+			<input type="button" class="btn btn-default" ng-click="getComments(article._id);" value="Comments ({{article.comments.length}})" style="margin-top : 10px; vertical-align: top;"/>
+			<textarea class="comment-textarea" ng-blur="addComment($index, article._id);" placeholder="Says something..." id="comment_{{$index}}" cols="100" rows="1"/> 
+			</div>
+			<div > 
+				<ul class="comment-list" ng-repeat="comment in article.comments" ng-show="isDisplay(article._id)">
+					<li><img class="img-author" src="assets/images/tquill.gif" alt="Author" title="Written by" /><span style="font-weight:bolder">{{comment.author}} said : </span>
+						<span style="margin-left : 30px">{{comment.content}}</span>
+						<span class="comment-vote" ><img class="img-author" src="assets/images/like.png" alt="like" title="Like" ng-click="incrementCommentUpvotes(comment._id)" /> <span style="color:green; font-weight : bold"> ({{comment.upvotes}}) </span>
+						<span class="comment-vote" ><img class="img-author" src="assets/images/dislike.png" alt="dislke" title="Dislike" ng-click="incrementCommentDownvotes(comment._id)"/> <span style="color:red; font-weight : bold"> ({{comment.downvotes}}) </span></span>
+						</li>
+					</ul>
+				</div>
+				<hr />
+			</li>
+		</ul>
+	</div>
+</div>
+<hr />
+<div class="container">
+	<header class="share-banner">
+		<h2>Share with us</h2>
+	</header>
+	<form class="article-form" ng-submit="addArticle()" name="articleForm" style="margin-top: 5px">
+		<input type="text" class="form-control" ng-model="newArticle.title" rows="3" placeholder="Title" required></input>
+	    <select ng-options="t.code as t.name for t in typeLinkValues" ng-model="newArticle.linkType" ngRequired="newArticle.linkSrc" style="margin-top: 5px; float:left"></select><input type="text" class="form-control" ng-model="newArticle.linkSrc" rows="3" ng-disabled="!newArticle.linkType || newArticle.linkType == ''" placeholder="Link" style="width : 88%; float:right"></input>
+		<textarea class="form-control" ng-model="newArticle.content" rows="3" placeholder="Write something..." required></textarea>
+		<input class="btn btn-primary" type="submit" ng-disabled="articleForm.$invalid" value="Post" style="float:right;">
+	</form>
+</div>							
